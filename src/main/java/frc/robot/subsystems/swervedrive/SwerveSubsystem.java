@@ -383,7 +383,7 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveWithSetpointGenerator(DoubleSupplier translationX, DoubleSupplier translationY,
                                             DoubleSupplier rotationX)
   {
-    SwerveController swerveController = swerveDrive.getSwerveController();
+    // SwerveController swerveController = swerveDrive.getSwerveController();
     try
     {
       return driveWithSetpointGenerator(() -> {

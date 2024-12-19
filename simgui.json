@@ -123,11 +123,32 @@
         "open": true
       },
       "SmartDashboard": {
+        "Encoders": {
+          "open": true
+        },
         "Field": {
+          "open": true
+        },
+        "Motors": {
           "open": true
         },
         "open": true,
         "swerve": {
+          "modules": {
+            "backleft": {
+              "open": true
+            },
+            "backright": {
+              "open": true
+            },
+            "frontleft": {
+              "open": true
+            },
+            "frontright": {
+              "open": true
+            },
+            "open": true
+          },
           "open": true
         }
       }
