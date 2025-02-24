@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ElevatorSubsystem extends SubsystemBase{
+public class ArmSubsystem extends SubsystemBase{
 
   /*
     * Allows for control of the elevator with two motors, one is the leader(left) and performs 
@@ -22,50 +22,44 @@ public class ElevatorSubsystem extends SubsystemBase{
     * https://github.com/REVrobotics/SPARK-MAX-Examples/tree/master
   */
 
-  public SparkMax m_left; // leader
-  public SparkMax m_right; // follower
+  public SparkMax m_arm;
 
-  public int kLeftElevatorId = 11;
-  public int kRightElevatorId = 12;
+  public int kArmMotorId = 50;
 
-  public SparkMaxConfig leftMotorConfig;
-  public SparkMaxConfig rightMotorConfig;
+  public SparkMaxConfig armMotorConfig;
 
   public SparkClosedLoopController closedLoopController;
-  public RelativeEncoder left_encoder;
+  public RelativeEncoder arm_encoder;
   
-  private Double kPos0 = 0.0;
-  private Double kPos1 = 5.0;
-  private Double kPos2 = 10.0;
-  private Double kPos3 = 15.0;
+  private Double kPos0 = 65.0;
+  private Double kPos1 = 40.0;
 
-  public ElevatorSubsystem() {
-    m_left = new SparkMax(kLeftElevatorId, MotorType.kBrushless);
-    m_right = new SparkMax(kRightElevatorId, MotorType.kBrushless);
+  public ArmSubsystem() {
+    m_arm = new SparkMax(kArmMotorId, MotorType.kBrushless);
 
-    closedLoopController = m_left.getClosedLoopController();
-    left_encoder = m_left.getEncoder();
-    leftMotorConfig = new SparkMaxConfig();
-    leftMotorConfig
-        .inverted(true);
+    closedLoopController = m_arm.getClosedLoopController();
+    arm_encoder = m_arm.getEncoder();
+    armMotorConfig = new SparkMaxConfig();
+    armMotorConfig
+        .inverted(false);
     /*
      * Configure the encoder. For this specific example, we are using the
      * integrated encoder of the NEO, and we don't need to configure it. If
      * needed, we can adjust values like the position or velocity conversion
      * factors.
      */
-    leftMotorConfig.encoder
+    armMotorConfig.encoder
     .positionConversionFactor(1)
     .velocityConversionFactor(1);
 
-    leftMotorConfig.closedLoop
+    armMotorConfig.closedLoop
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     // Set PID values for position control. We don't need to pass a closed loop
     // slot, as it will default to slot 0.
-    .p(0.015)
+    .p(0.04)
     .i(0)
     .d(0)
-    .outputRange(-1, 1)
+    .outputRange(-0.1, 0.1)
     // Set PID values for velocity control in slot 1
     .p(0.0001, ClosedLoopSlot.kSlot1)
     .i(0, ClosedLoopSlot.kSlot1)
@@ -83,20 +77,13 @@ public class ElevatorSubsystem extends SubsystemBase{
      * the SPARK MAX loses power. This is useful for power cycles that may occur
      * mid-operation.
      */
-    m_left.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-    // Initialize and configure the right/follower motor
-    rightMotorConfig = new SparkMaxConfig();
-    rightMotorConfig
-        .inverted(false)
-        .follow(m_left);
-    m_right.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_arm.configure(armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
     // Initialize dashboard values
-    SmartDashboard.setDefaultNumber("Target Position", 0);
-    SmartDashboard.setDefaultNumber("Target Velocity", 0);
-    SmartDashboard.setDefaultBoolean("Control Mode", false);
-    SmartDashboard.setDefaultBoolean("Reset Encoder", false);
+    SmartDashboard.setDefaultNumber("Arm Target Position", 0);
+    SmartDashboard.setDefaultNumber("Arm Target Velocity", 0);
+    SmartDashboard.setDefaultBoolean("Arm Control Mode", false);
+    SmartDashboard.setDefaultBoolean("Arm Reset Encoder", false);
   }
 
 
@@ -104,16 +91,10 @@ public class ElevatorSubsystem extends SubsystemBase{
       closedLoopController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
-  public Command elevatorPos0(){
+  public Command armPosition0(){
     return this.runOnce(() -> changePosition(kPos0));
   }
-  public Command elevatorPos1(){
+  public Command armPosition1(){
     return this.runOnce(() -> changePosition(kPos1));
-  }
-  public Command elevatorPos2(){
-    return this.runOnce(() -> changePosition(kPos2));
-  }
-  public Command elevatorPos3(){
-    return this.runOnce(() -> changePosition(kPos3));
   }
 }
