@@ -22,6 +22,7 @@ import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
 import java.io.File;
 import swervelib.SwerveInputStream;
 
@@ -145,15 +146,6 @@ public class RobotContainer
                                 driveFieldOrientedAnglularVelocitySim);
     
     driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-
-    driverXbox.pov(0).onTrue(elevator.elevatorPos0());
-    driverXbox.pov(90).onTrue(elevator.elevatorPos1());
-    driverXbox.pov(180).onTrue(elevator.elevatorPos2());
-    driverXbox.pov(270).onTrue(elevator.elevatorPos3());
-
-    driverXbox.x().onTrue(arm.armPosition0());
-    driverXbox.y().onTrue(arm.armPosition1());
-
     driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
   }
 

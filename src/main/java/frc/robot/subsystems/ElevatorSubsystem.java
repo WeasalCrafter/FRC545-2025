@@ -10,43 +10,35 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase{
 
   /*
-    * Allows for control of the elevator with two motors, one is the leader(left) and performs 
-    * PID calculations while the other(right) is inverted and follows the leader motor(left)
+    * Allows for control of the elevator with two motors, one is the leader(leader) and performs 
+    * PID calculations while the other(follower) is inverted and follows the leader motor(leader)
     * https://github.com/REVrobotics/SPARK-MAX-Examples/tree/master
   */
 
-  public SparkMax m_left; // leader
-  public SparkMax m_right; // follower
+  public SparkMax m_leader; 
+  public SparkMax m_follower;
 
-  public int kLeftElevatorId = 11;
-  public int kRightElevatorId = 12;
-
-  public SparkMaxConfig leftMotorConfig;
-  public SparkMaxConfig rightMotorConfig;
+  public SparkMaxConfig leaderMotorConfig;
+  public SparkMaxConfig followerMotorConfig;
 
   public SparkClosedLoopController closedLoopController;
-  public RelativeEncoder left_encoder;
-  
-  private Double kPos0 = 0.0;
-  private Double kPos1 = 5.0;
-  private Double kPos2 = 10.0;
-  private Double kPos3 = 15.0;
+  public RelativeEncoder leader_encoder;
 
   public ElevatorSubsystem() {
-    m_left = new SparkMax(kLeftElevatorId, MotorType.kBrushless);
-    m_right = new SparkMax(kRightElevatorId, MotorType.kBrushless);
+    m_leader = new SparkMax(ElevatorConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
+    m_follower = new SparkMax(ElevatorConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
 
-    closedLoopController = m_left.getClosedLoopController();
-    left_encoder = m_left.getEncoder();
-    leftMotorConfig = new SparkMaxConfig();
-    leftMotorConfig
+    closedLoopController = m_leader.getClosedLoopController();
+    leader_encoder = m_leader.getEncoder();
+    leaderMotorConfig = new SparkMaxConfig();
+    leaderMotorConfig
         .inverted(true);
     /*
      * Configure the encoder. For this specific example, we are using the
@@ -54,15 +46,15 @@ public class ElevatorSubsystem extends SubsystemBase{
      * needed, we can adjust values like the position or velocity conversion
      * factors.
      */
-    leftMotorConfig.encoder
+    leaderMotorConfig.encoder
     .positionConversionFactor(1)
     .velocityConversionFactor(1);
 
-    leftMotorConfig.closedLoop
+    leaderMotorConfig.closedLoop
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     // Set PID values for position control. We don't need to pass a closed loop
     // slot, as it will default to slot 0.
-    .p(0.015)
+    .p(ElevatorConstants.P_CONSTANT)
     .i(0)
     .d(0)
     .outputRange(-1, 1)
@@ -71,7 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     .i(0, ClosedLoopSlot.kSlot1)
     .d(0, ClosedLoopSlot.kSlot1)
     .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
-    .outputRange(-0.15, 0.15, ClosedLoopSlot.kSlot1);
+    .outputRange(ElevatorConstants.MIN_SPEED, ElevatorConstants.MAX_SPEED, ClosedLoopSlot.kSlot1);
 
         /*
      * Apply the configuration to the SPARK MAX.
@@ -83,20 +75,14 @@ public class ElevatorSubsystem extends SubsystemBase{
      * the SPARK MAX loses power. This is useful for power cycles that may occur
      * mid-operation.
      */
-    m_left.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_leader.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    // Initialize and configure the right/follower motor
-    rightMotorConfig = new SparkMaxConfig();
-    rightMotorConfig
+    // Initialize and configure the follower/follower motor
+    followerMotorConfig = new SparkMaxConfig();
+    followerMotorConfig
         .inverted(false)
-        .follow(m_left);
-    m_right.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-    // Initialize dashboard values
-    SmartDashboard.setDefaultNumber("Target Position", 0);
-    SmartDashboard.setDefaultNumber("Target Velocity", 0);
-    SmartDashboard.setDefaultBoolean("Control Mode", false);
-    SmartDashboard.setDefaultBoolean("Reset Encoder", false);
+        .follow(m_follower);
+    m_follower.configure(followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
 
@@ -105,15 +91,18 @@ public class ElevatorSubsystem extends SubsystemBase{
   }
 
   public Command elevatorPos0(){
-    return this.runOnce(() -> changePosition(kPos0));
+    return this.runOnce(() -> changePosition(ElevatorConstants.POS_ZERO));
   }
   public Command elevatorPos1(){
-    return this.runOnce(() -> changePosition(kPos1));
+    return this.runOnce(() -> changePosition(ElevatorConstants.POS_ONE));
   }
   public Command elevatorPos2(){
-    return this.runOnce(() -> changePosition(kPos2));
+    return this.runOnce(() -> changePosition(ElevatorConstants.POS_TWO));
   }
   public Command elevatorPos3(){
-    return this.runOnce(() -> changePosition(kPos3));
+    return this.runOnce(() -> changePosition(ElevatorConstants.POS_THREE));
+  }
+  public Command elevatorPos4(){
+    return this.runOnce(() -> changePosition(ElevatorConstants.POS_FOUR));
   }
 }

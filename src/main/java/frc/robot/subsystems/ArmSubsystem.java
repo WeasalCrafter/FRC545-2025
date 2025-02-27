@@ -10,9 +10,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase{
 
@@ -22,25 +22,19 @@ public class ArmSubsystem extends SubsystemBase{
     * https://github.com/REVrobotics/SPARK-MAX-Examples/tree/master
   */
 
-  public SparkMax m_arm;
+  public SparkMax m_pivot;
+  public SparkMaxConfig pivotConfig;
 
-  public int kArmMotorId = 50;
-
-  public SparkMaxConfig armMotorConfig;
-
-  public SparkClosedLoopController closedLoopController;
+  public SparkClosedLoopController pivotController;
   public RelativeEncoder arm_encoder;
-  
-  private Double kPos0 = 65.0;
-  private Double kPos1 = 40.0;
 
   public ArmSubsystem() {
-    m_arm = new SparkMax(kArmMotorId, MotorType.kBrushless);
+    m_pivot = new SparkMax(ArmConstants.PIVOT_MOTOR_ID, MotorType.kBrushless);
 
-    closedLoopController = m_arm.getClosedLoopController();
-    arm_encoder = m_arm.getEncoder();
-    armMotorConfig = new SparkMaxConfig();
-    armMotorConfig
+    pivotController = m_pivot.getClosedLoopController();
+    arm_encoder = m_pivot.getEncoder();
+    pivotConfig = new SparkMaxConfig();
+    pivotConfig
         .inverted(false);
     /*
      * Configure the encoder. For this specific example, we are using the
@@ -48,15 +42,15 @@ public class ArmSubsystem extends SubsystemBase{
      * needed, we can adjust values like the position or velocity conversion
      * factors.
      */
-    armMotorConfig.encoder
+    pivotConfig.encoder
     .positionConversionFactor(1)
     .velocityConversionFactor(1);
 
-    armMotorConfig.closedLoop
+    pivotConfig.closedLoop
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     // Set PID values for position control. We don't need to pass a closed loop
     // slot, as it will default to slot 0.
-    .p(0.04)
+    .p(ArmConstants.P_CONSTANT)
     .i(0)
     .d(0)
     .outputRange(-0.1, 0.1)
@@ -65,36 +59,19 @@ public class ArmSubsystem extends SubsystemBase{
     .i(0, ClosedLoopSlot.kSlot1)
     .d(0, ClosedLoopSlot.kSlot1)
     .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
-    .outputRange(-0.15, 0.15, ClosedLoopSlot.kSlot1);
+    .outputRange(ArmConstants.MIN_SPEED, ArmConstants.MAX_SPEED, ClosedLoopSlot.kSlot1);
 
-        /*
-     * Apply the configuration to the SPARK MAX.
-     *
-     * kResetSafeParameters is used to get the SPARK MAX to a known state. This
-     * is useful in case the SPARK MAX is replaced.
-     *
-     * kPersistParameters is used to ensure the configuration is not lost when
-     * the SPARK MAX loses power. This is useful for power cycles that may occur
-     * mid-operation.
-     */
-    m_arm.configure(armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-    // Initialize dashboard values
-    SmartDashboard.setDefaultNumber("Arm Target Position", 0);
-    SmartDashboard.setDefaultNumber("Arm Target Velocity", 0);
-    SmartDashboard.setDefaultBoolean("Arm Control Mode", false);
-    SmartDashboard.setDefaultBoolean("Arm Reset Encoder", false);
+    m_pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
-
 
   public void changePosition(Double targetPosition){
-      closedLoopController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    pivotController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
-  public Command armPosition0(){
-    return this.runOnce(() -> changePosition(kPos0));
+  public Command armPositionUp(){
+    return this.runOnce(() -> changePosition(ArmConstants.POS_UP));
   }
-  public Command armPosition1(){
-    return this.runOnce(() -> changePosition(kPos1));
+  public Command armPositionDown(){
+    return this.runOnce(() -> changePosition(ArmConstants.POS_DOWN));
   }
 }
