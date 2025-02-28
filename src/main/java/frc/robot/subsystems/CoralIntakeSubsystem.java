@@ -21,10 +21,12 @@ public class CoralIntakeSubsystem extends SubsystemBase{
         m_leader = new SparkMax(ElevatorConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
         m_follower = new SparkMax(ElevatorConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
         
+        leaderMotorConfig = new SparkMaxConfig();
         leaderMotorConfig
         .inverted(true);
         m_leader.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
+        followerMotorConfig = new SparkMaxConfig();
         followerMotorConfig
         .follow(ElevatorConstants.INTAKE_LEADER_ID);
         m_leader.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);

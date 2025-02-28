@@ -21,10 +21,12 @@ public class AlgaeIntakeSubsystem extends SubsystemBase{
         m_leader = new SparkMax(ArmConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
         m_follower = new SparkMax(ArmConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
         
+        leaderMotorConfig = new SparkMaxConfig();
         leaderMotorConfig
         .inverted(true);
         m_leader.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
+        followerMotorConfig = new SparkMaxConfig();
         followerMotorConfig
         .follow(ArmConstants.INTAKE_LEADER_ID);
         m_leader.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
