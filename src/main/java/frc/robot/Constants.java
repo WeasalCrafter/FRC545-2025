@@ -84,4 +84,8 @@ public final class Constants
     public static final double MAX_SPEED = 0.15;
     public static final double MIN_SPEED = -0.15;
   } 
+
+  public static class ClimberConstants {
+    public static final int CLIMEBR_MOTOR_ID = 40;
+  }
 }
