@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.CoralIntakeSubsystem;
@@ -40,9 +41,11 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/545"));
+                                                                                
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
-  private final CoralIntakeSubsystem intake = new CoralIntakeSubsystem();
+  private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
+  private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -147,11 +150,14 @@ public class RobotContainer
                                 driveFieldOrientedAnglularVelocity :
                                 driveFieldOrientedAnglularVelocitySim);
     
-    driverXbox.rightBumper().onTrue(intake.intakeReverse()).onFalse(intake.intakeZero());
-    driverXbox.rightTrigger().onTrue(intake.intakeForward()).onFalse(intake.intakeZero());
+    driverXbox.rightBumper().onTrue(coralIntake.reverse()).onFalse(coralIntake.zero());
+    driverXbox.rightTrigger().onTrue(coralIntake.forward()).onFalse(coralIntake.zero());
+
+    driverXbox.leftBumper().onTrue(algaeIntake.reverse()).onFalse(algaeIntake.zero());
+    driverXbox.leftTrigger().onTrue(algaeIntake.forward()).onFalse(algaeIntake.zero());
 
     driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-    driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+    driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
   }
 
   /**
