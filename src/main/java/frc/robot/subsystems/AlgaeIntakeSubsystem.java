@@ -23,13 +23,15 @@ public class AlgaeIntakeSubsystem extends SubsystemBase{
         
         leaderMotorConfig = new SparkMaxConfig();
         leaderMotorConfig
-        .inverted(true);
+        .inverted(false);
         m_leader.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         followerMotorConfig = new SparkMaxConfig();
         followerMotorConfig
+        .inverted(true)
         .follow(ArmConstants.INTAKE_LEADER_ID);
-        m_leader.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        m_follower.configure(followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void changeSpeed(Double targetSpeed){
