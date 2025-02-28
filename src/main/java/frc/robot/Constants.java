@@ -61,9 +61,13 @@ public final class Constants
     public static final double POS_THREE = 15;
     public static final double POS_FOUR = 20;
 
-    public static final double P_CONSTANT = 0.015;
+    public static final double P_INTAKE = 0.0;
+
+    public static final double P_VERT = 0.015;
     public static final double MAX_SPEED = 0.15;
     public static final double MIN_SPEED = -0.15;
+
+    public static final double INTAKE_SPEED = 0.1;
   }
 
   public static class ArmConstants {
@@ -74,8 +78,8 @@ public final class Constants
     public static final double POS_UP = 0;
     public static final double POS_DOWN = 15;
 
-    public static final double P_CONSTANT = 0.04;
+    public static final double P_PIVOT = 0.04;
     public static final double MAX_SPEED = 0.15;
     public static final double MIN_SPEED = -0.15;
-  }
+  } 
 }

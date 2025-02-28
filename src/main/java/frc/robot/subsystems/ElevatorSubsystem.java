@@ -32,8 +32,8 @@ public class ElevatorSubsystem extends SubsystemBase{
   public RelativeEncoder leader_encoder;
 
   public ElevatorSubsystem() {
-    m_leader = new SparkMax(ElevatorConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
-    m_follower = new SparkMax(ElevatorConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
+    m_leader = new SparkMax(ElevatorConstants.VERT_LEADER_ID, MotorType.kBrushless);
+    m_follower = new SparkMax(ElevatorConstants.VERT_FOLLOWER_ID, MotorType.kBrushless);
 
     closedLoopController = m_leader.getClosedLoopController();
     leader_encoder = m_leader.getEncoder();
@@ -54,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     // Set PID values for position control. We don't need to pass a closed loop
     // slot, as it will default to slot 0.
-    .p(ElevatorConstants.P_CONSTANT)
+    .p(ElevatorConstants.P_VERT)
     .i(0)
     .d(0)
     .outputRange(-1, 1)
@@ -81,7 +81,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     followerMotorConfig = new SparkMaxConfig();
     followerMotorConfig
         .inverted(false)
-        .follow(m_follower);
+        .follow(ElevatorConstants.VERT_LEADER_ID);
     m_follower.configure(followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
