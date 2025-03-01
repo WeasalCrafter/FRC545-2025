@@ -50,9 +50,9 @@ public class ArmSubsystem extends SubsystemBase{
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     // Set PID values for position control. We don't need to pass a closed loop
     // slot, as it will default to slot 0.
-    .p(ArmConstants.P_PIVOT)
-    .i(0)
-    .d(0)
+    .p(ArmConstants.PID_CONSTANTS.kP)
+    .i(ArmConstants.PID_CONSTANTS.kI)
+    .d(ArmConstants.PID_CONSTANTS.kD)
     .outputRange(-0.1, 0.1)
     // Set PID values for velocity control in slot 1
     .p(0.0001, ClosedLoopSlot.kSlot1)

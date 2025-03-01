@@ -21,6 +21,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -46,6 +47,7 @@ public class RobotContainer
   private final ArmSubsystem arm = new ArmSubsystem();
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
+  private final ClimberSubsystem climber = new ClimberSubsystem();
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -150,12 +152,14 @@ public class RobotContainer
                                 driveFieldOrientedAnglularVelocity :
                                 driveFieldOrientedAnglularVelocitySim);
     
-    driverXbox.rightBumper().onTrue(coralIntake.reverse()).onFalse(coralIntake.zero());
-    driverXbox.rightTrigger().onTrue(coralIntake.forward()).onFalse(coralIntake.zero());
+    climber.setDefaultCommand(climber.freezeClimber());
+    coralIntake.setDefaultCommand(coralIntake.zero());
+    algaeIntake.setDefaultCommand(algaeIntake.zero());
 
-    driverXbox.leftBumper().onTrue(algaeIntake.reverse()).onFalse(algaeIntake.zero());
-    driverXbox.leftTrigger().onTrue(algaeIntake.forward()).onFalse(algaeIntake.zero());
-
+    driverXbox.rightBumper().onTrue(coralIntake.reverse());
+    driverXbox.rightTrigger().onTrue(coralIntake.forward());
+    driverXbox.leftBumper().onTrue(algaeIntake.reverse());
+    driverXbox.leftTrigger().onTrue(algaeIntake.forward());
     driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
     driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
   }
@@ -176,7 +180,20 @@ public class RobotContainer
     drivebase.setMotorBrake(brake);
   }
 
+
   public ElevatorSubsystem getElevator(){
     return elevator;
+  }
+  public ClimberSubsystem getClimber(){
+    return climber;
+  }
+  public ArmSubsystem getArm(){
+    return arm;
+  }
+  public CoralIntakeSubsystem getCoralIntake(){
+    return coralIntake;
+  }
+  public AlgaeIntakeSubsystem getAlgaeIntake(){
+    return algaeIntake;
   }
 }

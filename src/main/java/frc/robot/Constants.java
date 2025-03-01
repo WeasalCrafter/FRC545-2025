@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.PIDConstants;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -55,19 +57,18 @@ public final class Constants
     public static final int INTAKE_LEADER_ID = 22;
     public static final int INTAKE_FOLLOWER_ID = 23;
 
-    public static final double POS_ZERO = 0;
-    public static final double POS_ONE = 5;
-    public static final double POS_TWO = 10;
-    public static final double POS_THREE = 15;
-    public static final double POS_FOUR = 20;
+    public static final double POS_ZERO = 0; // TODO
+    public static final double POS_ONE = 5; // TODO
+    public static final double POS_TWO = 10; // TODO
+    public static final double POS_THREE = 15; // TODO
+    public static final double POS_FOUR = 20; // TODO
 
-    public static final double P_INTAKE = 0.0;
+    public static final PIDConstants PID_CONSTANTS = new PIDConstants(0.015,0,0,0); // TODO
 
-    public static final double P_VERT = 0.015;
-    public static final double MAX_SPEED = 0.15;
-    public static final double MIN_SPEED = -0.15;
+    public static final double MAX_SPEED = 0.15; // TODO
+    public static final double MIN_SPEED = -0.15; // TODO
 
-    public static final double INTAKE_SPEED = 0.1;
+    public static final double INTAKE_SPEED = 0.1; // TODO
   }
 
   public static class ArmConstants {
@@ -75,17 +76,25 @@ public final class Constants
     public static final int INTAKE_LEADER_ID = 31;
     public static final int INTAKE_FOLLOWER_ID = 32;  
 
-    public static final double POS_UP = 0;
-    public static final double POS_DOWN = 15;
+    public static final double POS_UP = 0; // TODO
+    public static final double POS_DOWN = 15; // TODO
 
-    public static final double INTAKE_SPEED = 0.1;
+    public static final double INTAKE_SPEED = 0.1; // TODO
 
-    public static final double P_PIVOT = 0.04;
-    public static final double MAX_SPEED = 0.15;
-    public static final double MIN_SPEED = -0.15;
+    public static final PIDConstants PID_CONSTANTS = new PIDConstants(0.04,0,0,0); // TODO
+    public static final double MAX_SPEED = 0.15; // TODO
+    public static final double MIN_SPEED = -0.15; // TODO
   } 
 
   public static class ClimberConstants {
     public static final int CLIMEBR_MOTOR_ID = 40;
+    public static final double MOTOR_SPEED = 0.1; // TODO
+
+    public static final double FORWARD_LIMIT = 10; // TODO
+    public static final double REVERSE_LIMIT = -10; // TODO
+
+    public static final PIDConstants PID_CONSTANTS = new PIDConstants(0,0,0,0); // TODO
+    public static final double RESET_POS = 0; // TODO
+    public static final double CLIMBER_SPEED = 0.1; // TODO
   }
 }
